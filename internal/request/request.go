@@ -21,7 +21,7 @@ type Request struct {
 // TODO: add a response writer: w io.Writer
 type Handler func(r Request) string
 
-func Handle(conn net.Conn, routes map[string]Handler) {
+func Handle(conn net.Conn, routes *map[string]Handler) {
 	defer conn.Close()
 
 	bufReader := bufio.NewReader(conn)
@@ -45,13 +45,13 @@ func Handle(conn net.Conn, routes map[string]Handler) {
 		Headers:     make(map[string]string),
 	}
 
-	if _, exists := routes[request.Path]; !exists {
+	if _, exists := (*routes)[request.Path]; !exists {
 		response := "HTTP/1.1 404 Not Found\r\nContent-Length: 9\r\n\r\nNot Found"
 		conn.Write([]byte(response))
 		return
 	}
 
-	routeHandler := routes[request.Path]
+	routeHandler := (*routes)[request.Path]
 
 	for {
 		line, err := bufReader.ReadString('\n')

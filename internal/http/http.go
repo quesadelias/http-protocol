@@ -54,6 +54,6 @@ func (s *Server) accept() {
 		}
 		fmt.Println("Connection accepted: ", conn.RemoteAddr())
 
-		go request.Handle(conn, s.routes)
+		go request.Handle(conn, &s.routes)
 	}
 }
